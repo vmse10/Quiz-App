@@ -1,0 +1,52 @@
+<!-- templates/select_exam.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Exam</title>
+    <style>
+        /* Your CSS styles */
+        body {
+            background-color: #002b5e;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding-top: 50px;
+        }
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .exam-btn {
+            background-color: #fff;
+            color: #002b5e;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .exam-btn:hover {
+            background-color: #cce7ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select an Exam</h1>
+    <div class="container">
+        {% if exam_ids %}
+            {% for exam_id in exam_ids %}
+                <form action="{{ url_for('start_quiz') }}" method="post">
+                    <input type="hidden" name="exam_id" value="{{ exam_id }}">
+                    <button type="submit" class="exam-btn">{{ exam_names.get(exam_id, 'Exam ' ~ exam_id) }}</button>
+                </form>
+            {% endfor %}
+        {% else %}
+            <p>No exams available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

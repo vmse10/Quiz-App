@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #002b5e;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+        }
+        .title-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .title {
+            background-color: #fff;
+            color: #002b5e;
+            padding: 10px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .scores {
+            display: flex;
+            justify-content: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        .score {
+            background-color: #fff;
+            color: #002b5e;
+            padding: 20px;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+            margin: 0 10px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .container {
+            background-color: #ffffff;
+            color: #002b5e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: opacity 0.5s ease-out;
+            width: 80%;
+            max-width: 600px;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .code {
+            background-color: #2d2d2d !important;
+            color: #f8f8f2 !important;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace !important;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 20px;
+            box-shadow: none !important;
+        }
+        .options {
+            margin: 20px 0;
+            counter-reset: option-counter;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            color: #002b5e;
+            position: relative;
+            padding-left: 35px;
+        }
+        .options input {
+            display: none;
+        }
+        .options input:checked + label {
+            background-color: #cce7ff;
+            border-color: #007bff;
+        }
+        .options label:hover {
+            background-color: #e0e0e0;
+        }
+        .options label::before {
+            content: counter(option-counter, upper-alpha);
+            counter-increment: option-counter;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #002b5e;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+        .submit-btn-container {
+			border-radius: 8px;
+            text-align: center;
+        }
+        .submit-btn {
+			border-radius: 8px;
+            background-color: #002b5e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+			border-radius: 8px;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .modal-content p {
+            color: red;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-btn {
+			border-radius: 8px;
+            background-color: #002b5e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        pre {
+            text-align: left;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code[class*="language-"], pre[class*="language-"] {
+            background-color: #2d2d2d !important;
+            color: #f8f8f2 !important;
+            box-shadow: none !important;
+            border: none !important;
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title-container">
+            <div class="title">Quiz App - {{ exam_name }}</div>
+        </div>
+        <div class="score-container">
+            <div class="score" style="color: green;">Correct: {{ correct_answers }}</div>
+            <div class="score" style="color: red;">Incorrect: {{ incorrect_answers }}</div>
+        </div>
+    </div>
+    <div class="container" id="quiz-container">
+        <div class="question">
+            Question {{ current_question_number }}: {{ question[1] }}
+        </div>
+        {% if question[2] %}
+            <pre class="code"><code class="language-python">{{ question[2] }}</code></pre>
+        {% endif %}
+        <form id="quiz-form" action="{{ url_for('submit') }}" method="POST">
+            <input type="hidden" name="question_id" value="{{ question[0] }}">
+            <div class="options">
+                {% for option in question[3].split(';;-;') %}
+                    {% if question[5] %}
+                        <input type="checkbox" name="answer" value="{{ option }}" id="option{{ loop.index }}">
+                        <label for="option{{ loop.index }}">{{ option }}</label>
+                    {% else %}
+                        <input type="radio" name="answer" value="{{ option }}" id="option{{ loop.index }}">
+                        <label for="option{{ loop.index }}">{{ option }}</label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="submit-btn-container">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modal-message"></p>
+            <button class="modal-btn" onclick="reviewQuestion()">Review Question</button>
+            <button class="modal-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            let incorrect = {{ incorrect|tojson }};
+            const form = document.getElementById('quiz-form');
+            const container = document.getElementById('quiz-container');
+            const modal = document.getElementById('myModal');
+            const span = document.getElementsByClassName('close')[0];
+            const modalMessage = document.getElementById('modal-message');
+
+            function showModal() {
+                modalMessage.textContent = 'Your answer is incorrect! What would you like to do?';
+                modal.style.display = 'flex';
+            }
+
+            if (incorrect) {
+                showModal();
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                container.style.opacity = '0';
+                setTimeout(() => {
+                    form.submit();
+                }, 500);
+            });
+
+            span.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            function reviewQuestion() {
+                modal.style.display = 'none';
+                fetch("{{ url_for('review') }}", {method: 'GET'})
+                .then(() => {
+                    container.style.opacity = '0';
+                    setTimeout(() => {
+                        location.href = "{{ url_for('quiz') }}";
+                    }, 500);
+                });
+            }
+
+            function nextQuestion() {
+                modal.style.display = 'none';
+                incorrect = false;
+                fetch("{{ url_for('next_question') }}", {method: 'POST'})
+                .then(() => {
+                    container.style.opacity = '0';
+                    setTimeout(() => {
+                        location.href = "{{ url_for('quiz') }}";
+                    }, 500);
+                });
+            }
+
+            window.reviewQuestion = reviewQuestion;
+            window.nextQuestion = nextQuestion;
+        });
+    </script>
+</body>
+</html>

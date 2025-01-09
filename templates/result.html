@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <style>
+        body {
+            background-color: #002b5e;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+        }
+        .title-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .title {
+            background-color: #fff;
+            color: #002b5e;
+            padding: 10px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .scores {
+            display: flex;
+            justify-content: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        .score {
+            background-color: #fff;
+            color: #002b5e;
+            padding: 20px;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+            margin: 0 10px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .container {
+            background-color: #ffffff;
+            color: #002b5e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            transition: opacity 0.5s ease-out;
+            width: 80%;
+            max-width: 600px;
+        }
+        .submit-btn-container {
+            text-align: center;
+        }
+        .submit-btn {
+            background-color: #002b5e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title-container">
+            <div class="title">Quiz Results - {{ exam_name }}</div>
+        </div>
+        <div class="score-container">
+            <div class="score" style="color: green;">Correct Answers: {{ correct_answers }}</div>
+            <div class="score" style="color: red;">Incorrect Answers: {{ incorrect_answers }}</div>
+        </div>
+        <div class="score-container">
+            <div class="score" style="color: blue;">Percentage: {{ percentage }}%</div>
+        </div>
+    </div>
+    <div class="container" id="quiz-container">
+        <div class="submit-btn-container">
+            <a href="{{ url_for('index') }}" class="submit-btn">Restart Quiz</a>
+        </div>
+    </div>
+</body>
+</html>
